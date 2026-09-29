@@ -221,17 +221,3 @@ and applies its predicate (all-match, K-hits-in-window, aggregate). One
 violation period fires one alert; the condition dropping re-arms it. Eviction
 runs in event time, which the reorder buffer guarantees.
 
-## Known limitations (intentional)
-
-- **Tenant isolation:** fixed partitions mean one very large tenant can occupy
-  queue capacity shared with others. Production would add tenant quotas,
-  partition assignment, or dedicated worker pools.
-- **Single-process state:** queues, buffers, and window state are in-memory.
-  Multi-instance deployment would externalize them to a shared store/broker;
-  the partitioning model stays the same.
-- **SQLite** allows a single writer; this demonstrates correct ordering and
-  concurrency design, not horizontal write scale. Set `DATABASE_URL` to a
-  PostgreSQL URL (`postgresql+asyncpg://...`) and install `psycopg` /
-  `asyncpg` — no code changes.
-- **Rules are loaded per event.** A 2-second in-memory rule cache is the easy
-  next step if event volume grows.
